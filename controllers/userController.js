@@ -60,4 +60,33 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+  async createFriend(req, res) {
+    try {
+      const { userId, friendId } = req.params;
+
+      //find the user and friend documents
+      const user = await User.findOneAndUpdate(userId);
+      const friend = await User.findById(friendId);
+
+      if (!user || !friend) {
+        return res
+          .status(404)
+          .json({ message: "No user or friend with that id." });
+      }
+
+      //check if user is already has friend in friends array
+      const isFriend = user.friends.includes(friendId);
+      if (isFriend) {
+        return res.status(404).json({ message: "Already friends!" });
+      }
+
+      //add friend to the user friends array
+      user.friends.push(friendId);
+      await user.save();
+
+      res.status(200).json({ message: "Friend added successfully!" });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
 };
