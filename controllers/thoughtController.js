@@ -90,4 +90,20 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+  async deleteReaction(req, res) {
+    try {
+      const { reactionId } = req.body;
+      const thought = await Thought.findByIdAndUpdate(
+        req.params.thoughtId,
+        { $pull: { reactions: { reactionId } } },
+        { new: true }
+      );
+      if (!thought) {
+        return res.status(404).json({ message: "No thought with that id" });
+      }
+      res.status(200).json({ message: "Reaction deleted", thought });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
 };
