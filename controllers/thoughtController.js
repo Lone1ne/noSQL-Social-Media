@@ -69,7 +69,7 @@ module.exports = {
         { thoughts: req.params.thoughtId },
         { $pull: { thoughts: req.params.thoughtId } }
       );
-      res.status(200).json({ message: "Thought deleted" });
+      res.status(200).json({ message: "Thought deleted", deletedThought });
     } catch (err) {
       res.status(500).json(err);
     }

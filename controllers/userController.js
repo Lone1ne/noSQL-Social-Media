@@ -13,7 +13,9 @@ module.exports = {
   //get a single user from id in parameters
   async getUser(req, res) {
     try {
-      const user = await User.findOne({ _id: req.params.userId });
+      const user = await User.findOne({ _id: req.params.userId })
+        .populate("thoughts")
+        .populate("friends");
       if (!user) {
         return res.status(404).json({ message: "No user with that id" });
       }
@@ -41,7 +43,7 @@ module.exports = {
       if (!user) {
         return res.status(404).json({ message: "No user with that id" });
       }
-      res.status(200).json(user);
+      res.status(200).json({ message: "User updated!", user });
     } catch (err) {
       res.status(500).json(err);
     }
@@ -65,7 +67,11 @@ module.exports = {
       const { userId, friendId } = req.params;
 
       //find the user and friend documents
-      const user = await User.findOneAndUpdate(userId);
+      const user = await User.findOneAndUpdate(
+        { _id: userId },
+        { $addToSet: { friends: friendId } },
+        { new: true }
+      );
       const friend = await User.findById(friendId);
 
       if (!user || !friend) {
@@ -74,17 +80,11 @@ module.exports = {
           .json({ message: "No user or friend with that id." });
       }
 
-      //check if user is already has friend in friends array
-      const isFriend = user.friends.includes(friendId);
-      if (isFriend) {
-        return res.status(404).json({ message: "Already friends!" });
-      }
-
-      //add friend to the user friends array
-      user.friends.push(friendId);
-      await user.save();
-
-      res.status(200).json({ message: "Friend added successfully!" });
+      res.status(200).json({
+        message: "Friend added successfully!",
+        friend: friend.username,
+        user,
+      });
     } catch (err) {
       res.status(500).json(err);
     }
@@ -112,7 +112,10 @@ module.exports = {
       );
       await user.save();
 
-      res.status(200).json({ message: "Friend deleted successfully!" });
+      res.status(200).json({
+        message: "Friend deleted successfully!",
+        user,
+      });
     } catch (err) {
       res.status(500).json(err);
     }
