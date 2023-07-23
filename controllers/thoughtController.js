@@ -37,7 +37,7 @@ module.exports = {
         });
       }
 
-      res.status(200).json(thoughtData);
+      res.status(200).json({ message: "Thought Created", thoughtData });
     } catch (err) {
       res.status(500).json(err);
     }
@@ -52,7 +52,7 @@ module.exports = {
       if (!thought) {
         return res.status(404).json({ message: "No thought with that id" });
       }
-      res.status(200).json(thought);
+      res.status(200).json({ message: "Updated thought", thought });
     } catch (err) {
       res.status(500).json(err);
     }
