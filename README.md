@@ -22,8 +22,12 @@ npm start
 
 Finally, use a tool like Insomnia to test the routes.
 
+## Acknowledgments
+
+A special thanks to [Jordan Olguin](https://github.com/jordanolguin) for his consultation and assistance during the development of this project.
+
 ## Questions
 
-Feel free to contact me here if you have questions! :
+Feel free to contact me here if you have questions!
 
 [LinkedIn](https://www.linkedin.com/in/derekszcz45/) : [Github](https://github.com/Lone1ne)
