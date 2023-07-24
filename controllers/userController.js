@@ -92,26 +92,15 @@ module.exports = {
   async deleteFriend(req, res) {
     try {
       const { userId, friendId } = req.params;
-
-      //find the user document
-      const user = await User.findOneAndUpdate(userId);
-
+      //find the user document and remove the friendId from the friends array
+      const user = await User.findByIdAndUpdate(
+        userId,
+        { $pull: { friends: friendId } },
+        { new: true }
+      );
       if (!user) {
         return res.status(404).json({ message: "No user with that id." });
       }
-
-      //check if user is already has friend in friends array
-      const isFriend = user.friends.includes(friendId);
-      if (!isFriend) {
-        return res.status(404).json({ message: "Friend not found" });
-      }
-
-      //remove friend from the user friends array
-      user.friends = user.friends.filter(
-        (friend) => friend.toString() !== friendId
-      );
-      await user.save();
-
       res.status(200).json({
         message: "Friend deleted successfully!",
         user,
